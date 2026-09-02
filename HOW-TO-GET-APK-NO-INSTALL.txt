@@ -1,0 +1,72 @@
+ANDROID APK — BINA KUCH INSTALL KIYE (GitHub Actions se)
+========================================================================
+Tumhare computer pe SIRF ek browser chahiye. Na Android Studio, na
+Node.js, na kuch install karna hai. Poora build GitHub ke free cloud
+server pe hoga.
+
+STEP 1 — GitHub account banao
+--------------------------------
+github.com pe jaake free account banao (agar pehle se nahi hai).
+
+
+STEP 2 — Naya repository banao
+----------------------------------
+1. github.com pe "New repository" pe click karo
+2. Naam do: videoportal-app
+3. "Private" select karo (public bhi chalega, but private safe hai)
+4. "Create repository" dabao
+
+
+STEP 3 — Is poore folder ko GitHub pe upload karo
+------------------------------------------------------
+Do tareeke hain:
+
+  (A) Browser se (sabse aasan, koi command nahi):
+      - Apne naye repo page pe "uploading an existing file" link
+        pe click karo
+      - Is poore extracted folder (videoportal-app) ke andar ki SAARI
+        files aur folders (package.json, capacitor.config.json, www/,
+        android-native-patch/, .github/ waghera) ko drag-drop karo
+      - "Commit changes" dabao
+      ⚠️ Zaroor check karo ki ".github" folder bhi upload hua ho
+      (browser me hidden dikh sakta hai naam ke dot ki wajah se —
+      agar upload me miss ho jaye to GitHub Desktop app use kar lena,
+      wo hidden folders bhi upload kar deta hai)
+
+  (B) Agar GitHub Desktop app use karna chaho (thoda better, free hai):
+      - desktop.github.com se GitHub Desktop install karo
+      - "Add local repository" se ye folder select karo
+      - "Publish repository" dabao — sab kuch (hidden .github folder
+        samet) upload ho jaayega
+
+
+STEP 4 — Build chalao
+-------------------------
+1. GitHub pe apne repo ke andar "Actions" tab pe click karo
+2. "Build Android APK" workflow dikhega — usko select karo
+3. "Run workflow" button dabao (right side me)
+4. 3-5 minute wait karo (build cloud me chal raha hoga — progress
+   dikhega, green tick aayega jab complete ho)
+
+
+STEP 5 — APK download karo
+------------------------------
+1. Jo build complete hua hai usme click karo
+2. Neeche "Artifacts" section me "videoportal-debug-apk" dikhega
+3. Usko click karke download karo (ek .zip aayega, andar APK hoga)
+4. APK ko apne phone me bhejo (WhatsApp/Google Drive/USB cable — kuch
+   bhi)
+
+
+STEP 6 — Phone me install karo
+-----------------------------------
+1. Phone Settings → Security (ya "Apps") me jaake "Install unknown
+   apps" / "Install from this source" allow karo (jis app se APK khol
+   rahe ho, jaise Files app ya WhatsApp, usko permission do)
+2. APK file pe tap karo → "Install" dabao
+3. App khul jayega, tumhari website load ho jaayegi
+
+Bas! Play Store ki koi zarurat nahi, koi Android Studio ki zarurat
+nahi. Jab bhi code me kuch change karo (jaise capacitor.config.json
+me URL badle), bas GitHub pe naya push karo aur "Run workflow" dobara
+dabao — naya APK 5 minute me ready.

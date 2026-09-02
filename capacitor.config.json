@@ -1,0 +1,32 @@
+{
+  "appId": "com.aspire2027.videoportal",
+  "appName": "Video Portal",
+  "webDir": "www",
+  "server": {
+    "url": "https://prev-live-classes-azio.onrender.com",
+    "androidScheme": "https",
+    "cleartext": false,
+    "allowNavigation": [
+      "prev-live-classes-azio.onrender.com",
+      "video-play-api.newstreamcp.workers.dev",
+      "accounts.google.com",
+      "www.googleapis.com",
+      "vjs.zencdn.net",
+      "cdnjs.cloudflare.com",
+      "www.youtube.com"
+    ]
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "ios": {
+    "contentInset": "automatic"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#f0f4fb",
+      "showSpinner": false
+    }
+  }
+}
