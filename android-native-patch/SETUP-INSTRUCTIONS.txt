@@ -1,0 +1,96 @@
+ANDROID SETUP INSTRUCTIONS (Google Sign-In fix + App Links)
+========================================================================
+
+STEP 1 — MainActivity.java replace karo
+----------------------------------------
+`npx cap add android` chalane ke baad ye file milegi:
+  android/app/src/main/java/com/aspire2027/videoportal/MainActivity.java
+
+Isko is folder ki MainActivity.java se poora REPLACE kar do.
+
+
+STEP 2 — build.gradle me dependency add karo
+----------------------------------------------
+File: android/app/build.gradle
+
+`dependencies { ... }` block ke ANDAR (curly braces ke bheetar, kahin
+bhi) ye line add karo:
+
+    implementation "androidx.browser:browser:1.8.0"
+
+(Chrome Custom Tabs ke liye zaroori hai)
+
+⚠️ COMMON MISTAKE (isi wajah se build fail hota hai): agar ye line
+`android { ... }` block ke andar ya file ke top-level pe chali jaaye
+to Gradle error dega: "Could not find method implementation()".
+Confused ho to isi folder ki "build.gradle.REFERENCE.txt" file dekho —
+usme exact jagah dikhayi hai comparison ke saath.
+
+
+STEP 3 — AndroidManifest.xml me App Link add karo
+----------------------------------------------------
+File: android/app/src/main/AndroidManifest.xml
+
+<activity> tag (jo MainActivity hai) ke andar, existing <intent-filter>
+(jo capacitor ne khud add kiya hoga launcher wala) ke NEECHE ye NAYA
+intent-filter add karo:
+
+    <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="https"
+            android:host="prev-live-classes-azio.onrender.com" />
+    </intent-filter>
+
+Isse jab Google login complete hoke tumhari website ke URL pe redirect
+karega, Android automatically tumhara app khol dega (browser me nahi
+atkega) — bilkul waise jaise koi normal https link app me khulta hai.
+
+
+STEP 4 — SHA256 fingerprint nikalo (assetlinks.json ke liye zaroori)
+----------------------------------------------------------------------
+Terminal me apna signing keystore ka SHA256 nikalo:
+
+  Debug build ke liye (testing):
+    keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
+
+  Release build ke liye (jo keystore Play Store upload ke liye banaoge):
+    keytool -list -v -keystore my-release-key.keystore -alias my-key-alias
+
+Output me "SHA256:" ke aage jo value hai (colon-separated hex string),
+usko copy karo — is folder ki assetlinks.json file me
+"YOUR_SHA256_FINGERPRINT_HERE" ki jagah paste karna hai.
+
+⚠️ NOTE: Debug aur Release keystore ka SHA256 ALAG-ALAG hota hai.
+Jab tak testing kar rahe ho, debug wala use karo. Jab Play Store pe
+final app upload karoge (release build), tab release keystore wala
+SHA256 bhi assetlinks.json me add karna (dono ek saath rakh sakte ho,
+array format me).
+
+
+STEP 5 — assetlinks.json apni website pe host karo
+------------------------------------------------------
+"well-known-files-for-render" folder me assetlinks.json diya hai.
+Isko apni Render website pe is EXACT path pe accessible banana hai:
+
+  https://prev-live-classes-azio.onrender.com/.well-known/assetlinks.json
+
+(Render pe static files serve ho rahi hain to bas `.well-known` folder
+bana ke usme ye file daal do — jaisa `admin.html`/`index.html` root me
+hai waise hi.)
+
+Test karne ke liye browser me ye URL kholo, JSON dikhna chahiye:
+  https://prev-live-classes-azio.onrender.com/.well-known/assetlinks.json
+
+
+STEP 6 — Sab kuch sync karo aur test karo
+----------------------------------------------
+  npx cap sync android
+  npx cap open android
+
+Android Studio me app run karo (real device pe test karna better hai,
+emulator me Custom Tabs/App Links kabhi kabhi glitch karte hain).
+Google Sign-In button dabao — Chrome Custom Tab khulna chahiye, login
+karne ke baad automatically wapas app me aa jaana chahiye.
