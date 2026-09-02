@@ -42,9 +42,11 @@ jobs:
         run: |
           cp android-native-patch/MainActivity.java android/app/src/main/java/com/aspire2027/videoportal/MainActivity.java
 
-      - name: Custom Tabs dependency add karo
+      - name: Custom Tabs dependency add karo (dependencies block ke ANDAR insert karo, end me append nahi)
         run: |
-          echo "implementation 'androidx.browser:browser:1.8.0'" >> android/app/build.gradle
+          sed -i '/^dependencies {/a\    implementation "androidx.browser:browser:1.8.0"' android/app/build.gradle
+          echo "----- Verify: dependencies block ka content -----"
+          grep -A 10 "^dependencies {" android/app/build.gradle
 
       - name: Capacitor sync karo
         run: npx cap sync android
