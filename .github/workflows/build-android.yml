@@ -1,0 +1,62 @@
+name: Build Android APK
+
+# Ye workflow GitHub ke free cloud servers pe chalta hai — tumhare
+# computer pe Android Studio, Java, ya kuch bhi install karne ki
+# zarurat NAHI hai. Bas code GitHub pe push karo, ye apne aap chal
+# jaayega aur APK bana ke de dega.
+
+on:
+  workflow_dispatch:      # "Run workflow" button se manually chalane ke liye
+  push:
+    branches: [ main ]    # jab bhi main branch pe push karo, auto build ho jayega
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code checkout karo
+        uses: actions/checkout@v4
+
+      - name: Node.js setup karo
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Java setup karo (Android build ke liye zaroori)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Android SDK setup karo
+        uses: android-actions/setup-android@v3
+
+      - name: npm packages install karo
+        run: npm install
+
+      - name: Android platform add karo
+        run: npx cap add android
+
+      - name: MainActivity.java patch apply karo (Google login fix)
+        run: |
+          cp android-native-patch/MainActivity.java android/app/src/main/java/com/aspire2027/videoportal/MainActivity.java
+
+      - name: Custom Tabs dependency add karo
+        run: |
+          echo "implementation 'androidx.browser:browser:1.8.0'" >> android/app/build.gradle
+
+      - name: Capacitor sync karo
+        run: npx cap sync android
+
+      - name: Debug APK build karo
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: APK ko upload karo (yahan se download karoge)
+        uses: actions/upload-artifact@v4
+        with:
+          name: videoportal-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
